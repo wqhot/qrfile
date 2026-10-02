@@ -1,4 +1,4 @@
-const CACHE = 'qrfile-pwa-2026-10-02-1';
+const CACHE = 'qrfile-pwa-2026-10-02-2';
 const ROOT = new URL('./', self.location.href).href;
 
 async function precacheApp() {
