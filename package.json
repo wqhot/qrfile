@@ -1,0 +1,19 @@
+{
+  "name": "qrfile-pwa",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "prepare-wasm": "node scripts/copy-wasm.mjs",
+    "build": "npm run prepare-wasm && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "fflate": "0.8.3",
+    "zxing-wasm": "3.1.4"
+  },
+  "devDependencies": {
+    "vite": "8.3.2"
+  }
+}
