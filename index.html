@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+    <meta name="theme-color" content="#111827" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="QRFile" />
+    <link rel="manifest" href="/qrfile/manifest.webmanifest" />
+    <link rel="icon" href="/qrfile/icon.svg" type="image/svg+xml" />
+    <title>QRFile Receiver</title>
+  </head>
+  <body>
+    <main id="app">
+      <header class="topbar">
+        <div>
+          <h1>QRFile Receiver</h1>
+          <p class="subtitle">iPhone / iPad 离线扫码恢复</p>
+        </div>
+        <span id="pwaBadge" class="badge">Web</span>
+      </header>
+
+      <section id="installHint" class="notice hidden">
+        在 Safari 中点“分享” → “添加到主屏幕”，之后可作为 PWA 离线运行。
+      </section>
+
+      <section class="viewer-card">
+        <div class="viewer-wrap">
+          <video id="preview" playsinline muted></video>
+          <div class="reticle" aria-hidden="true"></div>
+          <div id="viewerStatus" class="viewer-status">摄像头未启动</div>
+        </div>
+        <canvas id="captureCanvas" class="hidden-canvas"></canvas>
+      </section>
+
+      <section class="controls-card">
+        <div class="button-row">
+          <button id="startCamera" class="primary">启动摄像头</button>
+          <button id="stopSource">停止</button>
+          <label class="file-button">
+            导入视频
+            <input id="videoInput" type="file" accept="video/*" />
+          </label>
+          <label class="file-button">
+            导入照片
+            <input id="photoInput" type="file" accept="image/*" multiple />
+          </label>
+        </div>
+
+        <div class="settings-grid">
+          <label>
+            解码 Worker
+            <select id="workerCount">
+              <option value="1">1</option>
+              <option value="2" selected>2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </label>
+          <label>
+            扫描宽度
+            <select id="scanWidth">
+              <option value="960">960 px</option>
+              <option value="1280" selected>1280 px</option>
+              <option value="1600">1600 px</option>
+            </select>
+          </label>
+          <label>
+            视频速度
+            <select id="playbackRate">
+              <option value="1" selected>1×</option>
+              <option value="1.5">1.5×</option>
+              <option value="2">2×</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="stats-card">
+        <div class="session-row">
+          <label for="sessionSelect">文件会话</label>
+          <select id="sessionSelect"></select>
+        </div>
+        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+        <div class="stats-grid">
+          <div><span id="receivedStat" class="stat-value">0</span><span class="stat-label">已收到数据帧</span></div>
+          <div><span id="totalStat" class="stat-value">0</span><span class="stat-label">总数据帧</span></div>
+          <div><span id="missingStat" class="stat-value">0</span><span class="stat-label">当前缺失</span></div>
+          <div><span id="fecStat" class="stat-value">0</span><span class="stat-label">FEC 可恢复</span></div>
+          <div><span id="parityStat" class="stat-value">0</span><span class="stat-label">奇偶帧</span></div>
+          <div><span id="decodeRateStat" class="stat-value">0.0</span><span class="stat-label">有效 QR/s</span></div>
+        </div>
+        <p id="fileIdText" class="mono muted">file_id: -</p>
+      </section>
+
+      <section class="actions-card">
+        <div class="button-row">
+          <button id="runFec">执行 FEC</button>
+          <button id="restoreFile" class="primary">恢复文件</button>
+          <button id="saveRestored" disabled>保存 / 分享文件</button>
+          <button id="exportMissing">导出缺帧列表</button>
+          <button id="clearState" class="danger">清空中间结果</button>
+        </div>
+        <div id="restoreResult" class="result hidden"></div>
+      </section>
+
+      <section class="diagnostics-card">
+        <div class="diag-grid">
+          <div><span class="diag-label">扫码尝试</span><span id="attemptsStat">0</span></div>
+          <div><span class="diag-label">有效传输 QR</span><span id="validStat">0</span></div>
+          <div><span class="diag-label">重复 QR</span><span id="duplicateStat">0</span></div>
+          <div><span class="diag-label">协议/CRC 错误</span><span id="errorStat">0</span></div>
+          <div><span class="diag-label">存储</span><span id="storageStat">-</span></div>
+        </div>
+        <pre id="log"></pre>
+      </section>
+
+      <footer>
+        状态自动保存在 IndexedDB。扫码中可退出应用，重新打开后会继续显示已有帧。
+      </footer>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
